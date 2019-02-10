@@ -2,12 +2,15 @@ package czy.demo;
 
 
 import com.jfinal.config.*;
-import com.jfinal.core.JFinal;
+import com.jfinal.kit.Prop;
 import com.jfinal.kit.PropKit;
+import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.server.undertow.UndertowServer;
 import com.jfinal.template.Engine;
 import czy.demo.controller.HelloWorldController;
 
+/* Jfinal需要一个全局配置类，启动时使用配置类启动 */
 public class JFinalDemoApplication extends JFinalConfig {
 
     public static void main(String[] args){
@@ -21,10 +24,6 @@ public class JFinalDemoApplication extends JFinalConfig {
     @Override
     public void onStart() {
         System.out.println("项目已经启动");
-
-        /* PropKit可以读取属性文件 */
-        PropKit.use("db.properties");
-        System.out.println(PropKit.get("url"));
     }
 
     /* 停止钩子 */
@@ -35,7 +34,10 @@ public class JFinalDemoApplication extends JFinalConfig {
 
     @Override
     public void configConstant(Constants me) {
-
+        /* 开发模式 */
+        me.setDevMode(true);
+        /* 编码 */
+        me.setEncoding("utf-8");
     }
 
     /* 路由配置方法 */
@@ -54,7 +56,16 @@ public class JFinalDemoApplication extends JFinalConfig {
     /* 配置插件 */
     @Override
     public void configPlugin(Plugins me) {
+        /* 读取数据库属性文件 */
+        Prop db = PropKit.use("db.properties");
 
+        /* Druid连接池插件 */
+        DruidPlugin druid = new DruidPlugin(db.get("url"),db.get("username"),db.get("password"));
+        me.add(druid);
+
+        /* orm映射插件 */
+        ActiveRecordPlugin activeRecord = new ActiveRecordPlugin(druid);
+        me.add(activeRecord);
     }
 
     /* 拦截器 */
