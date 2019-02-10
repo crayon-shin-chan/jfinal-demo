@@ -19,4 +19,5 @@ repositories {
 dependencies {
     compile group: 'com.jfinal', name: 'jfinal', version: '3.6'
     compile group: 'com.jfinal', name: 'jfinal-undertow', version: '1.5'
+    compile group: 'com.jfinal', name: 'jetty-server', version: '2019.1'
 }
