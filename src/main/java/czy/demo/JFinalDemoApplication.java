@@ -3,6 +3,7 @@ package czy.demo;
 
 import com.jfinal.config.*;
 import com.jfinal.core.JFinal;
+import com.jfinal.kit.PropKit;
 import com.jfinal.server.undertow.UndertowServer;
 import com.jfinal.template.Engine;
 import czy.demo.controller.HelloWorldController;
@@ -16,11 +17,17 @@ public class JFinalDemoApplication extends JFinalConfig {
         //JFinal.start("src/main/webapp", 8080, "/", 5);
     }
 
+    /* 启动钩子 */
     @Override
     public void onStart() {
         System.out.println("项目已经启动");
+
+        /* PropKit可以读取属性文件 */
+        PropKit.use("db.properties");
+        System.out.println(PropKit.get("url"));
     }
 
+    /* 停止钩子 */
     @Override
     public void onStop() {
         System.out.println("项目已经停止");
@@ -38,16 +45,19 @@ public class JFinalDemoApplication extends JFinalConfig {
         me.add("/", HelloWorldController.class);
     }
 
+    /* 配置模板引擎 */
     @Override
     public void configEngine(Engine me) {
 
     }
 
+    /* 配置插件 */
     @Override
     public void configPlugin(Plugins me) {
 
     }
 
+    /* 拦截器 */
     @Override
     public void configInterceptor(Interceptors me) {
 
